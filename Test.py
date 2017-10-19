@@ -1,9 +1,10 @@
 import unittest
+from Sol import LCA
 
 class TestLCAMethod(unittest.TestCase):
-
+    
     def test_3_Node_Tree(self):
-        self.assertEqual(False, True)
+        self.assertEqual(LCA.lowestCommonAncestor(0 ,0, 0),True)
 
     def test_Root_As_Result(self):
         self.assertTrue(False)
