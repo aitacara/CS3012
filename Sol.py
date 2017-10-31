@@ -16,4 +16,6 @@ class LCA(object):
 
 
 	def LCA4DAG(self, graph, a, b):
+		#check that the graph is of the correct type
+		assert nx.is_directed_acyclic_graph(graph)
 		return 0
