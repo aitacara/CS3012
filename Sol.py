@@ -13,3 +13,7 @@ class LCA(object):
 		# 3. If neither of them is in that subtree,
 		#    return the node of that subtree.
 		return root if left and right else left or right
+
+
+	def LCA4DAG(self, graph, a, b):
+		return 0

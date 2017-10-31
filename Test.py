@@ -30,6 +30,10 @@ class TestLCAMethod(unittest.TestCase):
     def test_Mid_Tree_Result_Left_split_level(self):
         self.assertEqual(caller.lowestCommonAncestor(dummy.root ,dummy.search(7), dummy.search(4)).key,dummy.search(5).key)
 
+    #Tests for DAG LCA
+    def test_Two_In_Line(self):
+        self.assertEqual(caller.LCA4DAG(G, 'a', 'b'), 'c')
+
 
 
 if __name__ == '__main__':
