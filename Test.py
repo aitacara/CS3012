@@ -32,7 +32,24 @@ class TestLCAMethod(unittest.TestCase):
 
     #Tests for DAG LCA
     def test_Two_In_Line(self):
-        self.assertEqual(caller.LCA4DAG(G, 'a', 'b'), 'c')
+        self.assertEqual(caller.LCA4DAG(G, 'a', 'b'), 'b')
+
+    def test_In_seprate_branch(self):
+        self.assertEqual(caller.LCA4DAG(G, 'e', 'c'), 'g')
+
+    def test_In_seprate_branch_1(self):
+        self.assertEqual(caller.LCA4DAG(G, 'd', 'f'), 'g')
+
+    def test_In_same_branch(self):
+        self.assertEqual(caller.LCA4DAG(G, 'b', 'd'), 'd')
+
+    def test_same_node(self):
+        self.assertEqual(caller.LCA4DAG(G, 'c', 'c'), 'c')
+
+    def test_same_node(self):
+        self.assertEqual(caller.LCA4DAG(G, 'c', 'c'), 'c')   
+
+
 
 
 
