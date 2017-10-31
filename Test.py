@@ -63,7 +63,6 @@ if __name__ == '__main__':
     pos = nx.spring_layout(G)
     nx.draw(G, pos)
     nx.draw_networkx_labels(G, pos, labels=dict([(c, c) for c in 'abcdefg']))
-    plt.show()
-    plt.pause(0.001)
-    input("Press [enter] to continue.")
+    plt.show(block=True)
+    print "Close graph to continue"
     unittest.main()
