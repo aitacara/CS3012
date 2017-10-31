@@ -1,6 +1,8 @@
 import unittest
 from TreeNode import Tree 
 from Sol import LCA
+import matplotlib.pyplot as plt; plt.ion()
+import networkx as nx
 
 class TestLCAMethod(unittest.TestCase):
     
@@ -43,5 +45,25 @@ if __name__ == '__main__':
     dummy.add_node(4)
     dummy.add_node(7)
     dummy.traverse()
-   
+
+    nodes = ["a","b","c","d","e","f","g"]
+    edges = [("g","d"),
+             ("g","f"),
+             ("d","c"),
+             ("c","b"),
+             ("b","a"),
+             ("f","e"),
+             ("e","b"),]
+
+    G = nx.DiGraph()
+    G.add_nodes_from(nodes)
+    G.add_edges_from(edges)
+
+    # plot
+    pos = nx.spring_layout(G)
+    nx.draw(G, pos)
+    nx.draw_networkx_labels(G, pos, labels=dict([(c, c) for c in 'abcdefg']))
+    plt.show()
+    plt.pause(0.001)
+    input("Press [enter] to continue.")
     unittest.main()

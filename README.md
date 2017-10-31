@@ -6,8 +6,13 @@ DONE- Create basic solution
 DONR- Research and write tests for edge cases we didn't consider  
 
 # LCA for DAG
--Change node class to enable creation of DAGs or create new node class  
--create a DAG for testing in our test class  
+DONE-Change node class to enable creation of DAGs or create new node class  
+	*decided on using networkx to repreent DAGs
+	*this also allows us visualise the graph easily
+	*needs to be pip installed to be able to run the tests
+	*Matplotlib also required
+
+DONE-create a DAG for testing in our test class  
 -create an empty method for our new LCA method  
 -write some tests for new DAG and lca method  
 -research solutions to the problem and change node class if required  
