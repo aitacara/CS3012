@@ -30,6 +30,11 @@ class LCA(object):
         for ii, c in enumerate(common_ancestors):
             sum_of_path_lengths[ii] = nx.shortest_path_length(graph, a, c) \
                                       + nx.shortest_path_length(graph, b, c)
+        
+        #if there are no common ansestors return 'none'.
+        if len(sum_of_path_lengths) == 0:
+            return ['none']
+
         minima, = np.where(sum_of_path_lengths == np.min(sum_of_path_lengths))
 
         #return answers as a list. Since we are not restricted to a single edge per node
