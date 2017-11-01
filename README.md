@@ -13,7 +13,8 @@ DONE-Change node class to enable creation of DAGs or create new node class
 *Matplotlib also required    
 
 DONE-create a DAG for testing in our test class  
--create an empty method for our new LCA method  
--write some tests for new DAG and lca method  
--research solutions to the problem and change node class if required  
+DONE-create an empty method for our new LCA method  
+DONE-write some tests for new DAG and lca method  
+DONE-research solutions to the problem and change node class if required  
 -implement new method  
+-check edge cases
