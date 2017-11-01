@@ -50,11 +50,14 @@ class TestLCAMethod(unittest.TestCase):
         self.assertEqual(caller.LCA4DAG(G, 'g', 'f'), ['e'])  
 
     def test_use_terminal_node(self):
-        self.assertEqual(caller.LCA4DAG(G, 'a', 'b'), ['none'])   
+        self.assertEqual(caller.LCA4DAG(G, 'a', 'b'), ['none']) 
 
+    #Test graph multiple solutions for some Nodes
+    def test_single_result(self):
+        self.assertEqual(caller.LCA4DAG(H, 'e', 'c'), ['b']) 
 
-
-
+    def test_multi_result(self):
+        self.assertEqual(caller.LCA4DAG(H, 'd', 'f'), ['c','e'])   
 
 
 
@@ -91,4 +94,27 @@ if __name__ == '__main__':
     nx.draw_networkx_labels(G, pos, labels=dict([(c, c) for c in 'abcdefg']))
     plt.show(block=True)
     print "Close graph to continue"
+
+
+    nodes1 = ["a","b","c","d","e","f","g"]
+    edges1 = [("g","d"),
+             ("g","f"),
+             ("d","c"),
+             ("c","b"),
+             ("b","a"),
+             ("f","e"),
+             ("e","b"),
+             ("d","e"),
+             ("f","c"),]
+
+    H = nx.DiGraph()
+    H.add_nodes_from(nodes1)
+    H.add_edges_from(edges1)
+
+    pos1 = nx.spring_layout(H)
+    nx.draw(H, pos1)
+    nx.draw_networkx_labels(H, pos1, labels=dict([(c, c) for c in 'abcdefg']))
+    plt.show(block=True)
+    print "Close graph to continue"
+
     unittest.main()

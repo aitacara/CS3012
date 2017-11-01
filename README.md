@@ -19,3 +19,4 @@ DONE-research solutions to the problem and change node class if required
 Done-implement new method  
 DONE-check edge cases. New tests. 
 *case where no decendant i.e. terminal node
+*Build graph where there are more than one solution. Test it
