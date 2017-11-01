@@ -44,10 +44,12 @@ class TestLCAMethod(unittest.TestCase):
         self.assertEqual(caller.LCA4DAG(G, 'b', 'd'), ['a'])
 
     def test_same_node(self):
-        self.assertEqual(caller.LCA4DAG(G, 'c', 'c'), ['c'])
+        self.assertEqual(caller.LCA4DAG(G, 'c', 'c'), ['b'])
 
-    def test_same_node_1(self):
+    def test_use_root_node(self):
         self.assertEqual(caller.LCA4DAG(G, 'g', 'f'), ['e'])   
+
+
 
 
 

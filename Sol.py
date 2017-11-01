@@ -26,5 +26,12 @@ class LCA(object):
         sum_of_path_lengths = np.zeros((len(common_ancestors)))
         #traverse graph and update path lengths
 
-        #find lowest value that is same for both leave zero if not same or put in sore if same
-        return 0
+        #find lowest value that is same for both leave zero if not same or put in score if same
+        for ii, c in enumerate(common_ancestors):
+            sum_of_path_lengths[ii] = nx.shortest_path_length(graph, a, c) \
+                                      + nx.shortest_path_length(graph, b, c)
+        minima, = np.where(sum_of_path_lengths == np.min(sum_of_path_lengths))
+
+        #return answers as a list. Since we are not restricted to a single edge per node
+        #it is possible formore than one node tobe a solution
+        return [common_ancestors[ii] for ii in minima]

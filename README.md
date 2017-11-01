@@ -17,4 +17,4 @@ DONE-create an empty method for our new LCA method
 DONE-write some tests for new DAG and lca method  
 DONE-research solutions to the problem and change node class if required  
 -implement new method  
--check edge cases
+-check edge cases. New tests.
