@@ -17,6 +17,6 @@ DONE- create an empty method for our new LCA method
 DONE- write some tests for new DAG and lca method  
 DONE- research solutions to the problem and change node class if required  
 DONE- implement new method  
-DONE- check edge cases. New tests.    
+DONE- check edge cases. new tests.    
 *case where no decendant i.e. terminal node     
 *build graph where there are more than one solution. Test it    
