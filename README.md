@@ -1,12 +1,12 @@
 # LowestCommonAncestor
-DONE- Chose unit testing framework for python (unittest is standard and included in base python)   
-DONE- Create core functionality tests   
-DONE- Create dummy data   
-DONE- Create basic solution  
-DONE- Research and write tests for edge cases we didn't consider  
+DONE- chose unit testing framework for python (unittest is standard and included in base python)   
+DONE- create core functionality tests   
+DONE- create dummy data   
+DONE- create basic solution  
+DONE- research and write tests for edge cases we didn't consider  
 
 # LCA for DAG
-DONE-Change node class to enable creation of DAGs or create new node class  
+DONE- change node class to enable creation of DAGs or create new node class  
 *decided on using networkx to repreent DAGs   
 *this also allows us visualise the graph easily    
 *needs to be pip installed to be able to run the tests     
