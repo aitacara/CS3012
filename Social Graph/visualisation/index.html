@@ -17,7 +17,7 @@ body {
 
 </style>
 <body>
-<svg width="1200" height="600"></svg>
+<svg width="2000" height="2000"></svg>
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script>
@@ -25,15 +25,28 @@ body {
 var graph = '{"nodes":[], "links":[]}';
 var obj = JSON.parse(graph);
 
+d3.json("https://api.github.com/users/octocat", function(error, data) {
+    console.log(data)
+    var uname = data.uname;
+    var img = data.avatar_url;
+    var size = 80;
+    obj['nodes'].push({uname,img,size});
+});
 
 var parent_index = 0
 d3.json("https://api.github.com/users/octocat/followers", function(error, data) {
     var q = queue();
+    
     for (var i=0; i<data.length; i++){
+        var size = 50;
     	var filename = data[i].followers_url;
         var uname =data[i].login;
         var img = data[i].avatar_url
-        obj['nodes'].push({uname,img});
+        var parent = obj['nodes'][0];
+        var source = parent.login;
+        var target = uname;
+        obj['nodes'].push({uname,img,size});
+        obj['links'].push({source,target});
         	console.log( filename)
         	q = q.defer(d3.json, filename);
         }
@@ -44,21 +57,21 @@ d3.json("https://api.github.com/users/octocat/followers", function(error, data) 
         if (!error) {
             for (var i=1; i<arguments.length; i++){
                 var children = arguments[i];
-                console.log( obj['nodes'])
                 indexOf(obj['nodes'], 1)
                 for (var j=1; j<children.length; j++){
+                    var size = 26
                     var uname = children[j].login;
                     var position = indexOf(obj['nodes'], uname);
+                    var parentNode = obj['nodes'][i];
+                    var source =parentNode.uname;
+                    var target =uname;
                     if(position === -1){
-                        console.log( {uname})
                          var img = children[j].avatar_url
-                         obj['nodes'].push({uname,img}); 
+                         obj['nodes'].push({uname,img,size}); 
+                         obj['links'].push({source,target});
                     }else{
-                        var parentNode = obj['nodes'][i];
-                        var source =parentNode.uname;
-                        var target =uname;
                         obj['links'].push({source,target});
-                        //console.log(obj['edges'])
+
                     }
                 } 
         }
@@ -76,7 +89,7 @@ d3.json("https://api.github.com/users/octocat/followers", function(error, data) 
         return -1;
     }
 
-//test graph with connections to nodes that appear often in followers
+//Graph creation
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
@@ -85,7 +98,7 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.uname; }))
-    .force("charge", d3.forceManyBody())
+    .force("charge", d3.forceManyBody().strength(-150))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 graph =JSON.parse(jsonStr);
@@ -111,8 +124,32 @@ graph =JSON.parse(jsonStr);
     // Append images
   var node = nodes.append("svg:image")
         .attr("xlink:href",  function(d) { return d.img;})
-        .attr("height", 10)
-        .attr("width", 10);
+        .attr("height", function(d) { return d.size;})
+        .attr("width",function(d) { return d.size;});
+ var empty = nodes.append("g");
+ var selected = empty;
+  var events = node.on( 'mouseenter', function() {
+            // select element in current context
+            selected =this;
+            d3.select( this )
+              .transition()
+              //.attr("x", function(d) { return d.x - 25;})
+              //.attr("y", function(d) { return d.y - 25;})
+              .attr("height", 60)
+              .attr("width", 60);
+          })
+          // set back
+          .on( 'mouseleave', function() {
+            d3.select( this )
+              .transition()
+              //.attr("x", function(d) { return d.x - 7.5;})
+              //.attr("y", function(d) { return d.y - 7.5;})
+              .attr("height", function(d) { return d.size;})
+              .attr("width", function(d) { return d.size;});
+          
+          selected =empty;
+          });
+
 
   node.append("title")
       .text(function(d) { return d.uname; });
@@ -132,8 +169,9 @@ graph =JSON.parse(jsonStr);
         .attr("y2", function(d) { return d.target.y; });
 
     node
-        .attr("x", function(d) { return d.x - 5; })
-        .attr("y", function(d) { return d.y - 5; });
+        .attr("x", function(d) { return d.x - d.size/2; })
+        .attr("y", function(d) { return d.y - d.size/2; });
+
   }
 
 function dragstarted(d) {
