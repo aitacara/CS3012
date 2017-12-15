@@ -19,8 +19,8 @@ body {
 <body>
    <div><input id="SearchBox" type="text" value="octocat"/></div>
 <select id="selectbox">
-  <option value="stargazers_url">Stared by</option>
-  <option value="contributors_url" selected="selected">Contributors</option>
+  <option value="stargazers_url" selected="selected">Stared by</option>
+  <option value="contributors_url" >Contributors</option>
   <option value="subscribers_url">Subscribers</option>
 </select>
   <div id="option">
@@ -49,9 +49,11 @@ function runVis(e) {
   var obj = JSON.parse(graph);
   var user = d3.select("#SearchBox").node().value;
   var option = d3.select("#selectbox").node().value;
+
   d3.json("https://api.github.com/users/"+user, function(error, data) {      
-        var uname = data.uname;
+        var uname;
         var img = data.avatar_url;
+        uname =  "Repo name: " + user;
         var size = 85;
         obj['nodes'].push({uname,img,size});
   });
@@ -62,10 +64,10 @@ function runVis(e) {
       for (var i=0; i<data.length; i++){
           var size = 30;
       	var filename = data[i][option];
-          var uname =data[i].name;
+          var uname = "Repo name: " + data[i].name;
           var parent = obj['nodes'][0];
           var img = parent.img;  
-          var source = parent.login;
+          var source = parent.uname;
           var target = uname;
           obj['nodes'].push({uname,img,size});
           obj['links'].push({source,target});
@@ -81,7 +83,7 @@ function runVis(e) {
                   indexOf(obj['nodes'], 1)
                   for (var j=1; j<children.length; j++){
                       var size = 20
-                      var uname = children[j].login;
+                      var uname = "Username: " + children[j].login;
                       var position = indexOf(obj['nodes'], uname);
                       var parentNode = obj['nodes'][i];
                       var source =parentNode.uname;
@@ -99,7 +101,7 @@ function runVis(e) {
           } else { console.log("load error") }
 
       jsonStr = JSON.stringify(obj);
-      console.log(jsonStr)
+     
 
       function indexOf(array, item) {
           for (var i = 1; i < array.length; i++) {

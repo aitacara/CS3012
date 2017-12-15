@@ -45,13 +45,13 @@ function runVis(e) {
     var obj = JSON.parse(graph);
     var user = d3.select("#SearchBox").node().value;
 
-    d3.json("https://api.github.com/users/"+user, function(error, data) {
-       
-        var uname = data.uname;
+  d3.json("https://api.github.com/users/"+user, function(error, data) {      
+        var uname;
         var img = data.avatar_url;
+        uname =  "Repo name: " + user;
         var size = 85;
         obj['nodes'].push({uname,img,size});
-    });
+  });
 
     d3.json("https://api.github.com/users/"+user+"/followers", function(error, data) {
         var q = queue();
@@ -59,7 +59,7 @@ function runVis(e) {
         for (var i=0; i<data.length; i++){
             var size = 30;
             var filename = data[i].followers_url;
-            var uname =data[i].login;
+            var uname ="Username: " +data[i].login;
             var parent = obj['nodes'][0];
             var img = data[i].avatar_url;  
             var source = parent.login;
@@ -78,7 +78,7 @@ function runVis(e) {
                     indexOf(obj['nodes'], 1)
                     for (var j=1; j<children.length; j++){
                         var size = 20
-                        var uname = children[j].login;
+                        var uname = "Username: " + children[j].login;
                         var position = indexOf(obj['nodes'], uname);
                         var parentNode = obj['nodes'][i];
                         var source =parentNode.uname;
