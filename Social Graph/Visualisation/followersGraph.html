@@ -48,7 +48,7 @@ function runVis(e) {
   d3.json("https://api.github.com/users/"+user, function(error, data) {      
         var uname;
         var img = data.avatar_url;
-        uname =  "Repo name: " + user;
+        uname =  "Root Username: " + user;
         var size = 85;
         obj['nodes'].push({uname,img,size});
   });
@@ -62,7 +62,7 @@ function runVis(e) {
             var uname ="Username: " +data[i].login;
             var parent = obj['nodes'][0];
             var img = data[i].avatar_url;  
-            var source = parent.login;
+            var source = parent.uname;
             var target = uname;
             obj['nodes'].push({uname,img,size});
             obj['links'].push({source,target});

@@ -17,7 +17,7 @@ body {
 
 </style>
 <body>
-   <div><input id="SearchBox" type="text" value="octocat"/></div>
+<div><input id="SearchBox" type="text" value="octocat"/></div>
 <select id="selectbox">
   <option value="stargazers_url" selected="selected">Stared by</option>
   <option value="contributors_url" >Contributors</option>
@@ -53,7 +53,7 @@ function runVis(e) {
   d3.json("https://api.github.com/users/"+user, function(error, data) {      
         var uname;
         var img = data.avatar_url;
-        uname =  "Repo name: " + user;
+        uname =  "Root Username: " + user;
         var size = 85;
         obj['nodes'].push({uname,img,size});
   });
