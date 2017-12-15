@@ -153,13 +153,13 @@ graph =JSON.parse(jsonStr);
   simulation.force("link")
       .links(graph.links);
 
-  //add zoom capabilities 
+//add zoom and drag capabilities 
 var zoom_handler = d3.zoom()
     .on("zoom", zoom_actions);
 
 zoom_handler(svg);     
 
-//Zoom functions 
+//Zoom and drag functions 
 function zoom_actions(){
     zoombox.attr("transform", d3.event.transform)
 }
