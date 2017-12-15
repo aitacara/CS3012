@@ -50,8 +50,9 @@ var svg = d3.select("svg"),
         height = +svg.attr("height");
 var zoombox;
 
-// dataprocessing: Create graph json from github api data
+//run visualisation using function so we can update on button press
 runVis();
+
 function runVis(e) {
 // dataprocessing: Create graph json from github api data
   var graph = '{"nodes":[], "links":[]}';
@@ -59,6 +60,7 @@ function runVis(e) {
   var user = d3.select("#SearchBox").node().value;
   var option = d3.select("#selectbox").node().value;
 
+//get root user and add to graph
   d3.json("https://api.github.com/users/"+user, function(error, data) {      
         var uname;
         var img = data.avatar_url;
@@ -66,7 +68,8 @@ function runVis(e) {
         var size = 85;
         obj['nodes'].push({uname,img,size});
   });
-
+//get all repos owned by root user. create async requests in queue for either the starerers, contributers or subscribers (dropdown) of each repo.
+// The ondataload function will run once all async json requests have finished. create nodes and links back to root from repos
     d3.json("https://api.github.com/users/"+user+"/repos", function(error, data) {
       var q = queue();
       
@@ -85,6 +88,8 @@ function runVis(e) {
           q.await(onDataLoaded);
       });
 
+//now that all data is loaded. add new  nodes and links to repo nodes. if a user node already exists create an edge to it
+//instead of a new node
       function onDataLoaded(error) {
           if (!error) {
               for (var i=1; i<arguments.length; i++){
@@ -126,7 +131,7 @@ function runVis(e) {
   zoombox = svg.append("g");
 
   var color = d3.scaleOrdinal(d3.schemeCategory20);
-
+//setup of simulation forces
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink().id(function(d) { return d.uname; }))
       .force("charge", d3.forceManyBody().strength(-125))
@@ -134,14 +139,14 @@ function runVis(e) {
 
   graph =JSON.parse(jsonStr);
 
-
+//make edges
     var link = zoombox.append("g")
         .attr("class", "links")
       .selectAll("line")
       .data(graph.links)
       .enter().append("line")
         .attr("stroke-width", function(d) { 1; });
-
+//make nodes
     var nodes = zoombox.append("g")
         .attr("class", "nodes")
       .selectAll("circle")
@@ -152,14 +157,14 @@ function runVis(e) {
             .on("end", dragended));;
 
 
-      // Append images
+// Append images to nodes
     var node = nodes.append("svg:image")
           .attr("xlink:href",  function(d) { return d.img;})
           .attr("height", function(d) { return d.size;})
           .attr("width",function(d) { return d.size;});
 
+//expand image on hover
     var events = node.on( 'mouseenter', function() {
-   
               d3.select( this )
                 .transition()
                 .attr("height",function(d) { return d.size*3;})
@@ -173,28 +178,31 @@ function runVis(e) {
                 .attr("width", function(d) { return d.size;});
             });
 
-
+//hover tooltip
     node.append("title")
         .text(function(d) { return d.uname; });
 
+// clock to update the simulation
     simulation
         .nodes(graph.nodes)
         .on("tick", ticked);
 
+// add forces to the edges
     simulation.force("link")
         .links(graph.links);
 
-        //add zoom and drag capabilities 
+//add zoom and drag capabilities 
     var zoom_handler = d3.zoom()
         .on("zoom", zoom_actions);
 
     zoom_handler(svg);     
 
-    //Zoom and drag functions 
+//Zoom and drag functions 
     function zoom_actions(){
         zoombox.attr("transform", d3.event.transform)
     }
 
+//run clock
     function ticked() {
       link
           .attr("x1", function(d) { return d.source.x; })
@@ -207,7 +215,7 @@ function runVis(e) {
           .attr("y", function(d) { return d.y - d.size/2; });
 
     }
-
+// make nodes dragable
   function dragstarted(d) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
@@ -228,6 +236,7 @@ function runVis(e) {
   }
 }
 
+// on button click delete everything and remake
 function updateData(){  
   zoombox.remove();
   runVis();
