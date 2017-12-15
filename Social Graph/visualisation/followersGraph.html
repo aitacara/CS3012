@@ -17,7 +17,7 @@ body {
 
 </style>
 <body>
-<svg width="2000" height="2000"></svg>
+<svg width="1200" height="800"></svg>
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script>
@@ -29,26 +29,24 @@ d3.json("https://api.github.com/users/octocat", function(error, data) {
     console.log(data)
     var uname = data.uname;
     var img = data.avatar_url;
-    var size = 80;
+    var size = 85;
     obj['nodes'].push({uname,img,size});
 });
 
-var parent_index = 0
 d3.json("https://api.github.com/users/octocat/followers", function(error, data) {
     var q = queue();
     
     for (var i=0; i<data.length; i++){
-        var size = 50;
-    	var filename = data[i].followers_url;
+        var size = 30;
+        var filename = data[i].followers_url;
         var uname =data[i].login;
-        var img = data[i].avatar_url
         var parent = obj['nodes'][0];
+        var img = data[i].avatar_url;  
         var source = parent.login;
         var target = uname;
         obj['nodes'].push({uname,img,size});
         obj['links'].push({source,target});
-        	console.log( filename)
-        	q = q.defer(d3.json, filename);
+          q = q.defer(d3.json, filename);
         }
         q.await(onDataLoaded);
     });
@@ -59,7 +57,7 @@ d3.json("https://api.github.com/users/octocat/followers", function(error, data) 
                 var children = arguments[i];
                 indexOf(obj['nodes'], 1)
                 for (var j=1; j<children.length; j++){
-                    var size = 26
+                    var size = 20
                     var uname = children[j].login;
                     var position = indexOf(obj['nodes'], uname);
                     var parentNode = obj['nodes'][i];
@@ -94,24 +92,26 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
+var zoombox = svg.append("g");
+
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.uname; }))
-    .force("charge", d3.forceManyBody().strength(-150))
+    .force("charge", d3.forceManyBody().strength(-130))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 graph =JSON.parse(jsonStr);
 
 
-  var link = svg.append("g")
+  var link = zoombox.append("g")
       .attr("class", "links")
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
       .attr("stroke-width", function(d) { 1; });
 
-  var nodes = svg.append("g")
+  var nodes = zoombox.append("g")
       .attr("class", "nodes")
     .selectAll("circle")
     .data(graph.nodes)
@@ -126,28 +126,20 @@ graph =JSON.parse(jsonStr);
         .attr("xlink:href",  function(d) { return d.img;})
         .attr("height", function(d) { return d.size;})
         .attr("width",function(d) { return d.size;});
- var empty = nodes.append("g");
- var selected = empty;
+
   var events = node.on( 'mouseenter', function() {
-            // select element in current context
-            selected =this;
+ 
             d3.select( this )
               .transition()
-              //.attr("x", function(d) { return d.x - 25;})
-              //.attr("y", function(d) { return d.y - 25;})
-              .attr("height", 60)
-              .attr("width", 60);
+              .attr("height",function(d) { return d.size*3;})
+              .attr("width", function(d) { return d.size*3;});
           })
           // set back
           .on( 'mouseleave', function() {
             d3.select( this )
               .transition()
-              //.attr("x", function(d) { return d.x - 7.5;})
-              //.attr("y", function(d) { return d.y - 7.5;})
               .attr("height", function(d) { return d.size;})
               .attr("width", function(d) { return d.size;});
-          
-          selected =empty;
           });
 
 
@@ -160,6 +152,17 @@ graph =JSON.parse(jsonStr);
 
   simulation.force("link")
       .links(graph.links);
+
+  //add zoom capabilities 
+var zoom_handler = d3.zoom()
+    .on("zoom", zoom_actions);
+
+zoom_handler(svg);     
+
+//Zoom functions 
+function zoom_actions(){
+    zoombox.attr("transform", d3.event.transform)
+}
 
   function ticked() {
     link
@@ -190,6 +193,8 @@ function dragended(d) {
   d.fx = null;
   d.fy = null;
 }
+
+
 
 }
 </script>
