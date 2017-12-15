@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Amayas Visualisations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Project repo">
+    <meta name="author" content="Shane Sheehan">
+
+    <!-- Le styles -->
+    <link href="/js/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+
+    <link href="/js/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+ 
+
+    <!-- Fav and touch icons -->
+{% block head %}
+{% endblock %}
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Amaya</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              {% block nav %}
+              <li ><a href="/">Home</a></li>
+              <li><a href="https://github.com/aitacara">Github</a></li>
+              {% endblock %}
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+{% block content %}
+{% endblock %}
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+{% block js %}
+{% endblock %}
+
+  </body>
+</html>

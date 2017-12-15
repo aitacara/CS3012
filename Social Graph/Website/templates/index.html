@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block nav %}
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="https://github.com/aitacara">Github</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="span4">
+          <h2>Followers Graph</h2>
+          <p> D3 visualisation of a github users followers (and the followers of these followers).
+           Visualised as a force directed graph which is zoomable,dragable, hoverable and interactive. </p>
+          <p><a class="btn" href="/followersvis">View&raquo;</a></p>
+        </div>
+         <div class="span4">
+          <h2>Project graph</h2>
+          <p> D3 graph of user repos and contributors, repo followers or users who stared repo.
+              Dropdown and textbox to select mode and root user.</p>
+          <p><a class="btn" href="/repovis">View  &raquo;</a></p>
+        </div>
+
+      </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<svg width="1200" height="800"></svg>
+{% endblock %}
+
+{% block js %}
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script>
+// dataprocessing: Create graph json from github api data
+var graph = '{"nodes":[], "links":[]}';
+var obj = JSON.parse(graph);
+
+d3.json("https://api.github.com/users/octocat", function(error, data) {
+    var uname = data.uname;
+    var img = data.avatar_url;
+    var size = 85;
+    obj['nodes'].push({uname,img,size});
+});
+
+d3.json("https://api.github.com/users/octocat/followers", function(error, data) {
+    var q = queue();
+    
+    for (var i=0; i<data.length; i++){
+        var size = 30;
+        var filename = data[i].followers_url;
+        var uname =data[i].login;
+        var parent = obj['nodes'][0];
+        var img = data[i].avatar_url;  
+        var source = parent.login;
+        var target = uname;
+        obj['nodes'].push({uname,img,size});
+        obj['links'].push({source,target});
+          q = q.defer(d3.json, filename);
+        }
+        q.await(onDataLoaded);
+    });
+
+    function onDataLoaded(error) {
+        if (!error) {
+            for (var i=1; i<arguments.length; i++){
+                var children = arguments[i];
+                indexOf(obj['nodes'], 1)
+                for (var j=1; j<children.length; j++){
+                    var size = 20
+                    var uname = children[j].login;
+                    var position = indexOf(obj['nodes'], uname);
+                    var parentNode = obj['nodes'][i];
+                    var source =parentNode.uname;
+                    var target =uname;
+                    if(position === -1){
+                         var img = children[j].avatar_url
+                         obj['nodes'].push({uname,img,size}); 
+                         obj['links'].push({source,target});
+                    }else{
+                        obj['links'].push({source,target});
+
+                    }
+                } 
+        }
+        } else { console.log("load error") }
+
+    jsonStr = JSON.stringify(obj);
+
+    function indexOf(array, item) {
+        for (var i = 1; i < array.length; i++) {
+            if (array[i].uname === item){
+                return i;
+                }    
+        }
+        return -1;
+    }
+
+
+
+//Graph creation
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var zoombox = svg.append("g");
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.uname; }))
+    .force("charge", d3.forceManyBody().strength(-130))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+graph =JSON.parse(jsonStr);
+
+
+  var link = zoombox.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
+    .enter().append("line")
+      .attr("stroke-width", function(d) { 1; });
+
+  var nodes = zoombox.append("g")
+      .attr("class", "nodes")
+    .selectAll("circle")
+    .data(graph.nodes)
+    .enter().append("g").call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));;
+
+
+    // Append images
+  var node = nodes.append("svg:image")
+        .attr("xlink:href",  function(d) { return d.img;})
+        .attr("height", function(d) { return d.size;})
+        .attr("width",function(d) { return d.size;});
+
+  var events = node.on( 'mouseenter', function() {
+ 
+            d3.select( this )
+              .transition()
+              .attr("height",function(d) { return d.size*3;})
+              .attr("width", function(d) { return d.size*3;});
+          })
+          // set back
+          .on( 'mouseleave', function() {
+            d3.select( this )
+              .transition()
+              .attr("height", function(d) { return d.size;})
+              .attr("width", function(d) { return d.size;});
+          });
+
+
+  node.append("title")
+      .text(function(d) { return d.uname; });
+
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph.links);
+
+//add zoom and drag capabilities 
+var zoom_handler = d3.zoom()
+    .on("zoom", zoom_actions);
+
+zoom_handler(svg);     
+
+//Zoom and drag functions 
+function zoom_actions(){
+    zoombox.attr("transform", d3.event.transform)
+}
+
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("x", function(d) { return d.x - d.size/2; })
+        .attr("y", function(d) { return d.y - d.size/2; });
+
+  }
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+
+
+}
+</script>
+{% endblock %}
